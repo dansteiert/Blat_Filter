@@ -1,0 +1,12 @@
+include: "rules/00_Setup.smk"
+include: "rules/01_prep_inputs.smk"
+include: "rules/02_blat_filter.smk"
+
+
+# container: "docker://condaforge/mambaforge"
+
+rule all:
+    input:
+        maf_all = expand(os.path.join(work_dir, blat_final_dir, "{sample}.blat.all.maf"), sample=sample_list),
+        maf_rejected = expand(os.path.join(work_dir, blat_final_dir, "{sample}.blat.rejected.maf"), sample=sample_list),
+        maf_passed =expand(os.path.join(work_dir, blat_final_dir, "{sample}.blat.passed.maf"), sample=sample_list),

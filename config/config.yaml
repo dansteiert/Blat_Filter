@@ -1,0 +1,16 @@
+work_dir: "/dh-projects/scnsl_ffpe/analysis/WGS_Analysis/SNV_InDel_Analysis/tumor_only/Blat_Filter"
+
+
+bam_source_dir: "/dh-projects/scnsl_ffpe/analysis/WGS_Alignment/Symlink_Alignments"
+maf_source_dir: "/dh-projects/scnsl_ffpe/analysis/WGS_Analysis/SNV_InDel_Analysis/tumor_only/Blat_Filter/MAF_symlink"
+insert_size_source_dir: "/dh-projects/scnsl_ffpe/analysis/WGS_Analysis/SNV_InDel_Analysis/tumor_only/Blat_Filter/Insert_Size_symlink"
+sample_list: [
+"scnsl-ffpe-10_tmr-cns-01", "scnsl-ffpe-11_tumor-cns-01", "scnsl-ffpe-11_tumor-systemic-01", "scnsl-ffpe-12_tumor-cns-01", "scnsl-ffpe-12_tumor-systemic-01", "scnsl-ffpe-132_tumor-cns-01", "scnsl-ffpe-133_tumor-systemic-01", "scnsl-ffpe-13_tmr-systemic-01", "scnsl-ffpe-14_tmr-cns-01", "scnsl-ffpe-16_tumor-cns-01", "scnsl-ffpe-18_tmr-cns-01", "scnsl-ffpe-18_tmr-systemic-01", "scnsl-ffpe-19_tmr-systemic-01", "scnsl-ffpe-1_tumor-cns-01", "scnsl-ffpe-1_tumor-cns-02", "scnsl-ffpe-20_tumor-systemic-01", "scnsl-ffpe-212_tumor-cns-01", "scnsl-ffpe-21_tumor-cns-01", "scnsl-ffpe-23_tumor-cns-01", "scnsl-ffpe-23_tumor-systemic-01", "scnsl-ffpe-24_tmr-cns-01", "scnsl-ffpe-28_tumor-cns-01", "scnsl-ffpe-28_tumor-systemic-01", "scnsl-ffpe-29_tmr-systemic-01", "scnsl-ffpe-2_tumor-cns-01", "scnsl-ffpe-2_tumor-systemic-01", "scnsl-ffpe-32_tmr-cns-01", "scnsl-ffpe-32_tmr-systemic-01", "scnsl-ffpe-33_tumor-systemic-01", "scnsl-ffpe-34_tumor-cns-01", "scnsl-ffpe-36_tmr-cns-01", "scnsl-ffpe-40_tumor-cns-01", "scnsl-ffpe-40_tumor-systemic-01", "scnsl-ffpe-41_tumor-cns-01", "scnsl-ffpe-41_tumor-systemic-01", "scnsl-ffpe-42_tmr-systemic-01", "scnsl-ffpe-43_tmr-cns-01", "scnsl-ffpe-43_tmr-systemic-01", "scnsl-ffpe-45_tmr-cns-01", "scnsl-ffpe-46_tmr-cns-01", "scnsl-ffpe-46_tmr-systemic-01", "scnsl-ffpe-46_tmr-systemic-02", "scnsl-ffpe-4_tumor-cns-01", "scnsl-ffpe-4_tumor-systemic-01", "scnsl-ffpe-4_tumor-systemic-01-relapse", "scnsl-ffpe-51_tmr-cns-01", "scnsl-ffpe-53_tmr-systemic-01", "scnsl-ffpe-54_tmr-systemic-01", "scnsl-ffpe-55_tumor-cns-01", "scnsl-ffpe-55_tumor-systemic-01", "scnsl-ffpe-56_tumor-cns-01", "scnsl-ffpe-57_tmr-cns-01", "scnsl-ffpe-59_tmr-cns-01", "scnsl-ffpe-60_tmr-cns-01", "scnsl-ffpe-61_tmr-cns-01", "scnsl-ffpe-69_tumor-cns-01", "scnsl-ffpe-69_tumor-systemic-01", "scnsl-ffpe-6_tmr-cns-01", "scnsl-ffpe-6_tmr-systemic-01", "scnsl-ffpe-7_tmr-cns-01", "scnsl-ffpe-7_tmr-systemic-01", "scnsl-ffpe-8_tmr-systemic-01", "scnsl-ffpe-LYFR-014-1_tmr-cns-01", "scnsl-ffpe-LYFR-100-161_tumor-cns-01", "scnsl-ffpe-LYFR-161-0_tmr-cns-01"
+]
+scatter_count: 80
+
+genome: "/dh-projects/scnsl_ffpe/analysis/software/reference-genome/hs37d5_PhiX.fa"
+blat_binary: "/dh-projects/scnsl_ffpe/analysis/software/ucsc_utilities/blat/blat"
+faToTwoBit_binary: "/dh-projects/scnsl_ffpe/analysis/software/ucsc_utilities/faToTwoBit"
+blat_filter_container: "/dh-projects/scnsl_ffpe/analysis/software/Blat_filter_TOOL/Blat_Filter.sif"
+blat_filter_script_dir: "/dh-projects/scnsl_ffpe/analysis/software/Blat_filter_TOOL"

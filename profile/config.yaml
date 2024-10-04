@@ -1,0 +1,24 @@
+jobs: 90 # number of concurrent jobs (if slurm is used otherwise #Jobs refer    ece to the available cores)
+### using slurm as executor engin
+#slurm: True  # To be used in snakemake 7
+executor: slurm # to be used in snakemake 8
+
+### using a containerized version
+#use-singularity: True # snakemake7
+software-deployment-method: conda #apptainer #apptainer #conda # snakemake 8
+# software-deployment-method: apptainer #apptainer #apptainer #conda # snakemake 8
+
+apptainer-prefix: "/home/steiertd/.apptainer/"
+apptainer-args: "-B /dh-projects/scnsl_ffpe/:/dh-projects/scnsl_ffpe/,/home/steiertd:/home/steiertd"  # currently not working in snakemake 8
+
+### using conda to manage environments
+#use-conda: true
+# conda-prefix: "/home/steiertd.conda/" # Path were environments should be stored
+
+### Snakemake behaviour
+latency-wait: 10
+keep-going: True
+printshellcmds: True
+rerun-incomplete: True
+restart-times: 0
+# delete-temp-output: True
