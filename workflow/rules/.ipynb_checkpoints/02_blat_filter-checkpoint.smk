@@ -10,7 +10,7 @@ rule scatter_maf:
     log: os.path.join(work_dir, log_dir, "{sample}_scatter_maf.log")
     resources:
         mem_mb=4000,
-        runtime=20,
+        runtime=60,
         nodes=1,
     run:
         ## Open Maf file and find header rows
@@ -63,33 +63,34 @@ rule filter_maf:
         maf = os.path.join(work_dir, tmp_blat_dir, filtered_dir, "{sample}", "{sample}_{scatter}.blat.passed.maf"),
         maf_all = os.path.join(work_dir, tmp_blat_dir, filtered_dir, "{sample}", "{sample}_{scatter}.blat.all.maf"),
         maf_rejected = os.path.join(work_dir, tmp_blat_dir, filtered_dir, "{sample}", "{sample}_{scatter}.blat.rejected.maf"),
-    threads: 1
-    # conda: "../envs/Filter_Blat.yaml"
-    container: blat_filter_container
+    threads: 2
+    conda: "../envs/Filter_Blat.yaml"
+    # container: blat_filter_container
     log: os.path.join(work_dir, log_dir, "{sample}_{scatter}_blat_filter.log")
     resources:
-        mem_mb=4000,
+        mem_mb=8000,
         runtime=60*24 * 1,
         nodes=1,
-    shell:
+    script:
+        "../scripts/blat_filter.py"
         ## PairName
         # "echo $SHELL; cat /proc/$$/cmdline; python -V; "
-        "python /app/blat_filter.py " #{params.blat_script} "
-        "--blat_executable /app/blat " #"{params.blat_binary} "
-        "--bam {input.bam} "
-        "--maf {input.maf} "
-        "--database {input.database} "
-        "--ooc {input.occ} "
-        "--out_name {params.output_prefix} " 
-        "--maf_chr_col Chromosome "
-        "--maf_chr_col_to_score_reads Chromosome " 
-        "--maf_start_pos_col Start_Position "
-        "--maf_start_pos_col_to_score_reads Start_Position "
-        "--maf_end_pos_col End_Position " 
-        "--maf_t_ref_count_col t_ref_count "
-        "--maf_t_alt_count_col t_alt_count "
-        "--set_maf_col_manually " 
-        "--insert_size_metrics {input.insert_size} "
+        #"python /app/blat_filter.py " #{params.blat_script} "
+        #"--blat_executable /app/blat " #"{params.blat_binary} "
+        #"--bam {input.bam} "
+        #"--maf {input.maf} "
+        #"--database {input.database} "
+        #"--ooc {input.occ} "
+        #"--out_name {params.output_prefix} " 
+        #"--maf_chr_col Chromosome "
+        #"--maf_chr_col_to_score_reads Chromosome " 
+        #"--maf_start_pos_col Start_Position "
+        #"--maf_start_pos_col_to_score_reads Start_Position "
+        #"--maf_end_pos_col End_Position " 
+        #"--maf_t_ref_count_col t_ref_count "
+        #"--maf_t_alt_count_col t_alt_count "
+        #"--set_maf_col_manually " 
+        #"--insert_size_metrics {input.insert_size} "
         # "&> {log}"
 
 
@@ -102,7 +103,8 @@ rule count_variants_maf:
     params:
         count_variants_script = os.path.join(blat_filter_script_dir, "src", "count_variants.py")
     threads: 1
-    container: blat_filter_container
+    # container: blat_filter_container
+    conda: "../envs/Filter_Blat.yaml"
     log: os.path.join(work_dir, log_dir, "{sample}_{scatter}_{group}_mutation_counts.log")
     resources:
         mem_mb=4000,
@@ -110,10 +112,10 @@ rule count_variants_maf:
         nodes=1,
     shell:
         ## PairName
-        "python /app/count_variants.py "#{params.count_variants_script}"
-        "{input.maf} {output.maf} "
+        #"python /app/count_variants.py "#{params.count_variants_script}"
+        #"{input.maf} {output.maf} "
         # "&> {log}"
-
+        "../scripts/count_variants.py"
 
 
 
@@ -131,14 +133,14 @@ rule gather_maf:
     log: os.path.join(work_dir, log_dir, "{sample}_{group}_gather_maf.log")
     resources:
         mem_mb=4000,
-        runtime=20,
+        runtime=60,
         nodes=1,
     run:
         header = True        
-        for maf in input.mafs:
+        for maf_tmp_path in input.mafs:
             ## Open Maf file and find header rows
             header_rows = []
-            f = open(maf, "r")
+            f = open(maf_tmp_path, "r")
             header_idx = 0
             while True:
                 line = f.readline()
@@ -153,15 +155,15 @@ rule gather_maf:
                 print("Over 2000")
                 print(header_rows)
             header_string = "".join(header_rows)
-            os.makedirs(os.path.split(output.maf_tmp)[0], exist_ok=True)
-            for df_maf in pd.read_csv(maf, sep="\t", skiprows=header_idx, low_memory=False, chunksize=params.chunksize):
-                df_out = df_maf.to_csv(index=False, sep='\t')
+            os.makedirs(os.path.split(output.maf)[0], exist_ok=True)
+            for df_maf in pd.read_csv(maf_tmp_path, sep="\t", skiprows=header_idx, low_memory=False, chunksize=params.chunksize):
                 if header:
+                    df_out = df_maf.to_csv(index=False, header=False, sep='\t')
                     with open(output.maf, 'w') as f:
                         f.write(header_string)
                         f.write(df_out)
                     header=False
                 else:
-                    df_maf.to_csv(maf, index=False, sep="\t", header=header, mode="a")
+                    df_maf.to_csv(output.maf, index=False, sep="\t", header=header, mode="a")
             
             

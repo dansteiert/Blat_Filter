@@ -63,12 +63,12 @@ rule filter_maf:
         maf = os.path.join(work_dir, tmp_blat_dir, filtered_dir, "{sample}", "{sample}_{scatter}.blat.passed.maf"),
         maf_all = os.path.join(work_dir, tmp_blat_dir, filtered_dir, "{sample}", "{sample}_{scatter}.blat.all.maf"),
         maf_rejected = os.path.join(work_dir, tmp_blat_dir, filtered_dir, "{sample}", "{sample}_{scatter}.blat.rejected.maf"),
-    threads: 1
+    threads: 2
     conda: "../envs/Filter_Blat.yaml"
     # container: blat_filter_container
     log: os.path.join(work_dir, log_dir, "{sample}_{scatter}_blat_filter.log")
     resources:
-        mem_mb=4000,
+        mem_mb=8000,
         runtime=60*24 * 1,
         nodes=1,
     script:
@@ -137,10 +137,10 @@ rule gather_maf:
         nodes=1,
     run:
         header = True        
-        for maf in input.mafs:
+        for maf_tmp_path in input.mafs:
             ## Open Maf file and find header rows
             header_rows = []
-            f = open(maf, "r")
+            f = open(maf_tmp_path, "r")
             header_idx = 0
             while True:
                 line = f.readline()
@@ -155,15 +155,15 @@ rule gather_maf:
                 print("Over 2000")
                 print(header_rows)
             header_string = "".join(header_rows)
-            os.makedirs(os.path.split(output.maf_tmp)[0], exist_ok=True)
-            for df_maf in pd.read_csv(maf, sep="\t", skiprows=header_idx, low_memory=False, chunksize=params.chunksize):
-                df_out = df_maf.to_csv(index=False, sep='\t')
+            os.makedirs(os.path.split(output.maf)[0], exist_ok=True)
+            for df_maf in pd.read_csv(maf_tmp_path, sep="\t", skiprows=header_idx, low_memory=False, chunksize=params.chunksize):
                 if header:
+                    df_out = df_maf.to_csv(index=False, header=False, sep='\t')
                     with open(output.maf, 'w') as f:
                         f.write(header_string)
                         f.write(df_out)
                     header=False
                 else:
-                    df_maf.to_csv(maf, index=False, sep="\t", header=header, mode="a")
+                    df_maf.to_csv(output.maf, index=False, sep="\t", header=header, mode="a")
             
             
